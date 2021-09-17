@@ -15,7 +15,16 @@ jobs:
           npm install
       - run: |
           npm run all
+  space_id:
+    runs-on: ubuntu-latest
+    steps:
+      - id: space_id
+        run: echo "::set-output name=id::$(uuidgen)"
+    outputs:
+      space_id: ${{ steps.space_id.outputs.id }}
   test-delete:
+    needs:
+      - space_id
     strategy:
       matrix:
         os:
@@ -30,9 +39,9 @@ jobs:
           access-key: ${{ secrets.LOFT_ACCESS_KEY }}
       - uses: loft-sh/create-space@main
         with:
-          name: delete-myspace-${{ matrix.os }}
+          name: delete-${{ matrix.os }}-${{ needs.space_id.outputs.space_id }}
       - run: loft list spaces
       - uses: ./
         with:
-          name: delete-myspace-${{ matrix.os }}
+          name: delete-${{ matrix.os }}-${{ needs.space_id.outputs.space_id }}
       - run: loft list spaces
