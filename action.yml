@@ -1,11 +1,13 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Delete Loft Space'
+description: 'GitHub Action to delete a Loft Space'
+author: loft.sh
 inputs:
-  milliseconds: # change this
+  name:
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    description: 'The name of the space to delete'
+  cluster:
+    required: false
+    description: 'The cluster on which to delete the space (if there are multiple spaces with the same name across multiple clusters)'
 runs:
   using: 'node12'
   main: 'dist/index.js'

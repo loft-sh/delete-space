@@ -15,10 +15,24 @@ jobs:
           npm install
       - run: |
           npm run all
-  test: # make sure the action works on a clean machine without building
-    runs-on: ubuntu-latest
+  test-delete:
+    strategy:
+      matrix:
+        os:
+          - windows-latest
+          - ubuntu-latest
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
+      - uses: loft-sh/setup-loft@main
+        with:
+          url: ${{ secrets.LOFT_URL }}
+          access-key: ${{ secrets.LOFT_ACCESS_KEY }}
+      - uses: loft-sh/create-space@main
+        with:
+          name: delete-myspace-${{ matrix.os }}
+      - run: loft list spaces
       - uses: ./
         with:
-          milliseconds: 1000
+          name: delete-myspace-${{ matrix.os }}
+      - run: loft list spaces
