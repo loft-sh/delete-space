@@ -15,10 +15,33 @@ jobs:
           npm install
       - run: |
           npm run all
-  test: # make sure the action works on a clean machine without building
+  space_id:
     runs-on: ubuntu-latest
     steps:
+      - id: space_id
+        run: echo "::set-output name=id::$(uuidgen)"
+    outputs:
+      space_id: ${{ steps.space_id.outputs.id }}
+  test-delete:
+    needs:
+      - space_id
+    strategy:
+      matrix:
+        os:
+          - windows-latest
+          - ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    steps:
       - uses: actions/checkout@v2
+      - uses: loft-sh/setup-loft@main
+        with:
+          url: ${{ secrets.LOFT_URL }}
+          access-key: ${{ secrets.LOFT_ACCESS_KEY }}
+      - uses: loft-sh/create-space@main
+        with:
+          name: delete-${{ matrix.os }}-${{ needs.space_id.outputs.space_id }}
+      - run: loft list spaces
       - uses: ./
         with:
-          milliseconds: 1000
+          name: delete-${{ matrix.os }}-${{ needs.space_id.outputs.space_id }}
+      - run: loft list spaces
