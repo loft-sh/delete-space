@@ -46,3 +46,4 @@ The following inputs can be used as `step.with` keys
 |---------------------|----------|------------------------------------|
 | `name`              | String   | The name of the space to delete
 | `cluster`           | String   | The cluster on which to delete the space (if there are multiple spaces with the same name across multiple clusters)multiple clusters)
+| `project`           | String   | The project to use (requires Loft 3.0 and above)
